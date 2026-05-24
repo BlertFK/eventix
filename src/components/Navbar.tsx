@@ -2,17 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { name: "Home", href: "#" },
-  { name: "Events", href: "#events" },
-  { name: "About", href: "#how-it-works" },
-  { name: "Contact", href: "#newsletter" },
+  { name: "Home", href: "/" },
+  { name: "Events", href: "/#events" },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -31,6 +34,11 @@ export default function Navbar() {
     };
   }, [mobileOpen]);
 
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href.split("#")[0]) && href.split("#")[0] !== "/";
+  };
+
   return (
     <>
       <motion.nav
@@ -46,7 +54,7 @@ export default function Navbar() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between md:h-20">
             {/* Logo */}
-            <a href="#" className="flex items-center gap-2 group">
+            <Link href="/" className="flex items-center gap-2 group">
               <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple to-pink">
                 <svg
                   className="h-5 w-5 text-white"
@@ -65,19 +73,25 @@ export default function Navbar() {
               <span className="text-xl font-bold tracking-tight text-white group-hover:text-purple-light transition-colors">
                 Eventix
               </span>
-            </a>
+            </Link>
 
             {/* Desktop nav */}
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
                   href={link.href}
-                  className="text-sm font-medium text-gray-400 hover:text-white transition-colors relative group"
+                  className={`text-sm font-medium transition-colors relative group ${
+                    isActive(link.href) ? "text-white" : "text-gray-400 hover:text-white"
+                  }`}
                 >
                   {link.name}
-                  <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-purple to-pink group-hover:w-full transition-all duration-300" />
-                </a>
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-purple to-pink transition-all duration-300 ${
+                      isActive(link.href) ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
+                </Link>
               ))}
             </div>
 
@@ -161,10 +175,8 @@ export default function Navbar() {
             <div className="relative h-full flex flex-col items-center justify-center px-8">
               <nav className="flex flex-col items-center gap-2">
                 {navLinks.map((link, i) => (
-                  <motion.a
+                  <motion.div
                     key={link.name}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
@@ -173,10 +185,19 @@ export default function Navbar() {
                       delay: 0.1 + i * 0.08,
                       ease: "easeOut",
                     }}
-                    className="text-4xl font-bold text-white hover:text-transparent hover:bg-gradient-to-r hover:from-purple hover:via-pink hover:to-cyan hover:bg-clip-text transition-all duration-300 py-3"
                   >
-                    {link.name}
-                  </motion.a>
+                    <Link
+                      href={link.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={`block text-4xl font-bold py-3 transition-all duration-300 ${
+                        isActive(link.href)
+                          ? "bg-gradient-to-r from-purple via-pink to-cyan bg-clip-text text-transparent"
+                          : "text-white hover:text-transparent hover:bg-gradient-to-r hover:from-purple hover:via-pink hover:to-cyan hover:bg-clip-text"
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.div>
                 ))}
               </nav>
 
