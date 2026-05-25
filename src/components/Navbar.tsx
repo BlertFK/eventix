@@ -4,10 +4,13 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
+import { ShoppingCart, Search } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "Events", href: "/#events" },
+  { name: "Events", href: "/events" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
 ];
@@ -16,6 +19,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const { totalItems } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -95,18 +100,45 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Auth buttons */}
+            {/* Right side actions */}
             <div className="hidden md:flex items-center gap-3">
-              <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors cursor-pointer">
-                Log in
-              </button>
-              <button className="relative group px-5 py-2.5 text-sm font-semibold text-white rounded-full overflow-hidden cursor-pointer">
-                <span className="absolute inset-0 bg-gradient-to-r from-purple via-pink to-cyan opacity-100 group-hover:opacity-90 transition-opacity" />
-                <span className="absolute inset-[1px] bg-navy rounded-full group-hover:bg-navy/80 transition-colors" />
-                <span className="relative bg-gradient-to-r from-purple-light via-pink to-cyan bg-clip-text text-transparent group-hover:text-white transition-all duration-300">
-                  Register
-                </span>
-              </button>
+              <Link href="/search" className="p-2 text-gray-400 hover:text-white transition-colors">
+                <Search className="w-4 h-4" />
+              </Link>
+              <Link href="/cart" className="relative p-2 text-gray-400 hover:text-white transition-colors">
+                <ShoppingCart className="w-4 h-4" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-gradient-to-r from-purple to-pink text-[10px] text-white font-bold flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+              {session ? (
+                <div className="flex items-center gap-3 ml-2">
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                  <Link href="/admin" className="w-8 h-8 rounded-full bg-gradient-to-br from-purple to-pink flex items-center justify-center text-white text-xs font-bold">
+                    {session.user?.name?.charAt(0) || "U"}
+                  </Link>
+                </div>
+              ) : (
+                <>
+                  <Link href="/login" className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                    Log in
+                  </Link>
+                  <Link href="/register" className="relative group px-5 py-2.5 text-sm font-semibold text-white rounded-full overflow-hidden">
+                    <span className="absolute inset-0 bg-gradient-to-r from-purple via-pink to-cyan opacity-100 group-hover:opacity-90 transition-opacity" />
+                    <span className="absolute inset-[1px] bg-navy rounded-full group-hover:bg-navy/80 transition-colors" />
+                    <span className="relative bg-gradient-to-r from-purple-light via-pink to-cyan bg-clip-text text-transparent group-hover:text-white transition-all duration-300">
+                      Register
+                    </span>
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Hamburger button - animated */}
@@ -209,18 +241,40 @@ export default function Navbar() {
                 transition={{ duration: 0.4, delay: 0.45 }}
                 className="flex gap-4 mt-12"
               >
-                <button
-                  onClick={() => setMobileOpen(false)}
-                  className="px-8 py-3 text-base font-medium text-gray-300 hover:text-white transition-colors rounded-full border border-glass-border hover:border-purple/30 cursor-pointer"
-                >
-                  Log in
-                </button>
-                <button
-                  onClick={() => setMobileOpen(false)}
-                  className="px-8 py-3 text-base font-semibold text-white rounded-full bg-gradient-to-r from-purple to-pink hover:shadow-lg hover:shadow-purple/25 transition-all duration-300 cursor-pointer"
-                >
-                  Register
-                </button>
+                {session ? (
+                  <>
+                    <Link
+                      href="/admin"
+                      onClick={() => setMobileOpen(false)}
+                      className="px-8 py-3 text-base font-medium text-gray-300 hover:text-white transition-colors rounded-full border border-glass-border hover:border-purple/30"
+                    >
+                      Admin Panel
+                    </Link>
+                    <button
+                      onClick={() => { setMobileOpen(false); signOut({ callbackUrl: "/" }); }}
+                      className="px-8 py-3 text-base font-semibold text-white rounded-full bg-gradient-to-r from-purple to-pink hover:shadow-lg hover:shadow-purple/25 transition-all duration-300 cursor-pointer"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileOpen(false)}
+                      className="px-8 py-3 text-base font-medium text-gray-300 hover:text-white transition-colors rounded-full border border-glass-border hover:border-purple/30"
+                    >
+                      Log in
+                    </Link>
+                    <Link
+                      href="/register"
+                      onClick={() => setMobileOpen(false)}
+                      className="px-8 py-3 text-base font-semibold text-white rounded-full bg-gradient-to-r from-purple to-pink hover:shadow-lg hover:shadow-purple/25 transition-all duration-300"
+                    >
+                      Register
+                    </Link>
+                  </>
+                )}
               </motion.div>
 
               {/* Bottom branding */}

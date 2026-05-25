@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
+import AuthProvider from "@/context/AuthProvider";
+import { CartProvider } from "@/context/CartContext";
+import { ToastProvider } from "@/components/ui/Toast";
+import CustomCursor from "@/components/CustomCursor";
+import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-neue",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -19,9 +25,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} antialiased`}>
+    <html lang="en" className={`${spaceGrotesk.variable} antialiased`}>
       <body className="min-h-screen bg-background text-foreground">
-        {children}
+        <AuthProvider>
+          <CartProvider>
+            <ToastProvider>
+              <SmoothScroll />
+              <CustomCursor />
+              {children}
+            </ToastProvider>
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );
