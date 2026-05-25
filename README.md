@@ -153,12 +153,6 @@ npm test
 3. Add environment variables in Vercel dashboard
 4. Deploy
 
-## Team
-
-| Name | Role |
-|------|------|
-| Blerta | Full-Stack Developer |
-
 ## License
 
 This project is built for educational purposes as part of the Web Development course at UBT.
