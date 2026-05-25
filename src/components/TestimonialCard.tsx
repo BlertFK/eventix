@@ -17,7 +17,7 @@ export default function TestimonialCard({
   avatar,
 }: TestimonialCardProps) {
   return (
-    <div className="relative p-6 md:p-8 rounded-2xl bg-glass/50 border border-glass-border backdrop-blur-md hover:border-purple/20 transition-all duration-300 h-full">
+    <div className="relative p-6 md:p-8 rounded-2xl bg-navy-light/80 md:bg-glass/50 border border-glass-border md:backdrop-blur-md hover:border-purple/20 transition-all duration-300 h-full">
 
       {/* Quote mark */}
       <svg

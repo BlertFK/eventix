@@ -17,11 +17,21 @@
 
 html {
   scroll-behavior: smooth;
-  cursor: none;
 }
 
-a, button, [role="button"], input, textarea, select, label[for] {
-  cursor: none;
+@media (pointer: fine) {
+  html {
+    cursor: none;
+  }
+  a, button, [role="button"], input, textarea, select, label[for] {
+    cursor: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .blur-orb {
+    display: none;
+  }
 }
 
 body {

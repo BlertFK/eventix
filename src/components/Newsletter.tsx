@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-
 export default function Newsletter() {
   return (
     <section id="newsletter" className="relative py-24 md:py-32 px-4 overflow-hidden">
@@ -10,23 +8,17 @@ export default function Newsletter() {
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple/50 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pink/50 to-transparent" />
 
-      {/* Floating orbs */}
+      {/* Floating orbs — hidden on mobile */}
       <div
-        className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-purple/10 blur-[100px]"
+        className="blur-orb absolute -top-20 -right-20 w-72 h-72 rounded-full bg-purple/10 blur-[100px]"
         style={{ animation: "float 12s ease-in-out infinite" }}
       />
       <div
-        className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-cyan/10 blur-[100px]"
+        className="blur-orb absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-cyan/10 blur-[100px]"
         style={{ animation: "float 15s ease-in-out infinite reverse" }}
       />
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.6 }}
-        className="relative max-w-2xl mx-auto text-center"
-      >
+      <div className="relative max-w-2xl mx-auto text-center">
         <span className="inline-flex items-center gap-2.5 mb-5 text-xs font-semibold tracking-[0.25em] uppercase text-pink">
           <span className="w-[3px] h-4 rounded-full bg-gradient-to-b from-pink to-cyan" />
           Stay Updated
@@ -39,11 +31,7 @@ export default function Newsletter() {
           events, exclusive deals, and early-bird tickets.
         </p>
 
-        <motion.form
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+        <form
           onSubmit={(e) => e.preventDefault()}
           className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
         >
@@ -58,12 +46,12 @@ export default function Newsletter() {
           >
             Subscribe
           </button>
-        </motion.form>
+        </form>
 
         <p className="mt-4 text-xs text-gray-600">
           No spam, unsubscribe anytime. We respect your privacy.
         </p>
-      </motion.div>
+      </div>
     </section>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import TestimonialCard from "./TestimonialCard";
 
@@ -108,6 +108,7 @@ export default function Testimonials() {
   };
 
   return (
+    <LazyMotion features={domAnimation}>
     <section className="relative py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-4">
         <SectionHeading
@@ -125,7 +126,7 @@ export default function Testimonials() {
           <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
           {/* Cards container - fixed height to prevent layout shift */}
-          <motion.div
+          <m.div
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.15}
@@ -134,7 +135,7 @@ export default function Testimonials() {
             className="cursor-grab active:cursor-grabbing h-[340px] md:h-[300px] overflow-visible relative"
           >
             <AnimatePresence initial={false} custom={direction} mode="popLayout">
-              <motion.div
+              <m.div
                 key={activeIndex}
                 custom={direction}
                 variants={variants}
@@ -158,9 +159,9 @@ export default function Testimonials() {
                     />
                   </div>
                 ))}
-              </motion.div>
+              </m.div>
             </AnimatePresence>
-          </motion.div>
+          </m.div>
         </div>
 
         {/* Dots + arrows */}
@@ -202,5 +203,6 @@ export default function Testimonials() {
         </div>
       </div>
     </section>
+    </LazyMotion>
   );
 }

@@ -1,7 +1,14 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { config } from "dotenv";
 
-const MONGODB_URI = "mongodb+srv://Eventixadmin:Eventixadmin@cluster0.hcgmsjp.mongodb.net/eventix?retryWrites=true&w=majority";
+config({ path: ".env.local" });
+
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) {
+  console.error("MONGODB_URI not found. Copy .env.example to .env.local and fill in your MongoDB connection string.");
+  process.exit(1);
+}
 
 const userSchema = new mongoose.Schema({
   name: String,
@@ -18,24 +25,26 @@ async function seed() {
 
   const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-  const existing = await User.findOne({ email: "admin@eventix.com" });
-  if (existing) {
-    console.log("Admin user already exists");
-    await mongoose.disconnect();
-    return;
-  }
-
   const hashedPassword = await bcrypt.hash("Admin123!", 12);
 
-  await User.create({
-    name: "Admin",
-    email: "admin@eventix.com",
-    password: hashedPassword,
-    role: "admin",
-    provider: "credentials",
-  });
+  const existing = await User.findOne({ email: "admin@eventix.com" });
+  if (existing) {
+    await User.updateOne(
+      { email: "admin@eventix.com" },
+      { password: hashedPassword, role: "admin" }
+    );
+    console.log("Admin user password reset!");
+  } else {
+    await User.create({
+      name: "Admin",
+      email: "admin@eventix.com",
+      password: hashedPassword,
+      role: "admin",
+      provider: "credentials",
+    });
+    console.log("Admin user created!");
+  }
 
-  console.log("Admin user created!");
   console.log("Email: admin@eventix.com");
   console.log("Password: Admin123!");
   await mongoose.disconnect();

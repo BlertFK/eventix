@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
+import { config } from "dotenv";
 
-const MONGODB_URI = "mongodb+srv://Eventixadmin:Eventixadmin@cluster0.hcgmsjp.mongodb.net/eventix?retryWrites=true&w=majority";
+config({ path: ".env.local" });
+
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) {
+  console.error("MONGODB_URI not found. Copy .env.example to .env.local and fill in your MongoDB connection string.");
+  process.exit(1);
+}
 
 const eventSchema = new mongoose.Schema({
   name: String,

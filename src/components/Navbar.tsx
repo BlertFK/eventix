@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -45,14 +45,12 @@ export default function Navbar() {
   };
 
   return (
+    <LazyMotion features={domAnimation}>
     <>
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+      <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-background/80 backdrop-blur-xl border-b border-purple/10 shadow-lg shadow-purple/5"
+            ? "bg-background/95 md:bg-background/80 md:backdrop-blur-xl border-b border-purple/10 shadow-lg shadow-purple/5"
             : "bg-transparent border-b border-transparent"
         }`}
       >
@@ -141,49 +139,31 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Hamburger button - animated */}
+            {/* Hamburger button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden relative z-[60] p-2 text-gray-400 hover:text-white transition-colors cursor-pointer"
             >
               <div className="w-6 h-5 relative flex flex-col justify-between">
-                <motion.span
-                  animate={
-                    mobileOpen
-                      ? { rotate: 45, y: 8, width: "100%" }
-                      : { rotate: 0, y: 0, width: "100%" }
-                  }
-                  transition={{ duration: 0.3 }}
-                  className="block h-0.5 w-full bg-current origin-center"
+                <span
+                  className={`block h-0.5 w-full bg-current origin-center transition-all duration-300 ${mobileOpen ? "rotate-45 translate-y-[8px]" : ""}`}
                 />
-                <motion.span
-                  animate={
-                    mobileOpen
-                      ? { opacity: 0, x: -20 }
-                      : { opacity: 1, x: 0 }
-                  }
-                  transition={{ duration: 0.2 }}
-                  className="block h-0.5 w-full bg-current"
+                <span
+                  className={`block h-0.5 w-full bg-current transition-all duration-200 ${mobileOpen ? "opacity-0 -translate-x-5" : ""}`}
                 />
-                <motion.span
-                  animate={
-                    mobileOpen
-                      ? { rotate: -45, y: -8, width: "100%" }
-                      : { rotate: 0, y: 0, width: "60%" }
-                  }
-                  transition={{ duration: 0.3 }}
-                  className="block h-0.5 bg-current origin-center ml-auto"
+                <span
+                  className={`block h-0.5 bg-current origin-center ml-auto transition-all duration-300 ${mobileOpen ? "-rotate-45 -translate-y-[8px] w-full" : "w-[60%]"}`}
                 />
               </div>
             </button>
           </div>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* Fullscreen mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -191,33 +171,13 @@ export default function Navbar() {
             className="fixed inset-0 z-40 md:hidden"
           >
             {/* Backdrop */}
-            <div className="absolute inset-0 bg-background/95 backdrop-blur-2xl" />
-
-            {/* Decorative orbs */}
-            <div
-              className="absolute top-1/4 -left-20 w-64 h-64 rounded-full bg-purple/15 blur-[100px]"
-              style={{ animation: "float 12s ease-in-out infinite" }}
-            />
-            <div
-              className="absolute bottom-1/4 -right-20 w-64 h-64 rounded-full bg-pink/15 blur-[100px]"
-              style={{ animation: "float 15s ease-in-out infinite reverse" }}
-            />
+            <div className="absolute inset-0 bg-background/95" />
 
             {/* Content */}
             <div className="relative h-full flex flex-col items-center justify-center px-8">
               <nav className="flex flex-col items-center gap-2">
-                {navLinks.map((link, i) => (
-                  <motion.div
-                    key={link.name}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.1 + i * 0.08,
-                      ease: "easeOut",
-                    }}
-                  >
+                {navLinks.map((link) => (
+                  <div key={link.name}>
                     <Link
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
@@ -229,18 +189,12 @@ export default function Navbar() {
                     >
                       {link.name}
                     </Link>
-                  </motion.div>
+                  </div>
                 ))}
               </nav>
 
               {/* Auth buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, delay: 0.45 }}
-                className="flex gap-4 mt-12"
-              >
+              <div className="flex gap-4 mt-12">
                 {session ? (
                   <>
                     <Link
@@ -275,21 +229,17 @@ export default function Navbar() {
                     </Link>
                   </>
                 )}
-              </motion.div>
+              </div>
 
               {/* Bottom branding */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="absolute bottom-8 text-xs text-gray-600 tracking-widest uppercase"
-              >
+              <p className="absolute bottom-8 text-xs text-gray-600 tracking-widest uppercase">
                 Eventix
-              </motion.p>
+              </p>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>
+    </LazyMotion>
   );
 }

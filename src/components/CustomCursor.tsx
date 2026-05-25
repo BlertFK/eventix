@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+
+const isMobile =
+  typeof window !== "undefined" &&
+  window.matchMedia("(pointer: coarse)").matches;
 
 export default function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -9,6 +12,8 @@ export default function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    if (isMobile) return;
+
     const move = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
       setIsVisible(true);
@@ -52,36 +57,30 @@ export default function CustomCursor() {
     };
   }, []);
 
-  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
-    return null;
-  }
+  if (isMobile) return null;
 
   return (
     <>
-      <motion.div
+      <div
         className="fixed top-0 left-0 z-[9999] pointer-events-none mix-blend-difference"
-        animate={{
-          x: position.x - 4,
-          y: position.y - 4,
+        style={{
+          transform: `translate(${position.x - 4}px, ${position.y - 4}px)`,
           opacity: isVisible ? 1 : 0,
         }}
-        transition={{ type: "tween", duration: 0, ease: "linear" }}
       >
         <div className={`rounded-full bg-white transition-all duration-200 ${isHovering ? "w-3 h-3" : "w-2 h-2"}`} />
-      </motion.div>
+      </div>
 
-      <motion.div
+      <div
         className="fixed top-0 left-0 z-[9998] pointer-events-none"
-        animate={{
-          x: position.x - 20,
-          y: position.y - 20,
+        style={{
+          transform: `translate(${position.x - 20}px, ${position.y - 20}px) scale(${isHovering ? 1.5 : 1})`,
           opacity: isVisible ? 1 : 0,
-          scale: isHovering ? 1.5 : 1,
+          transition: "transform 0.15s ease-out, opacity 0.1s ease-out",
         }}
-        transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.5 }}
       >
         <div className={`w-10 h-10 rounded-full border transition-colors duration-200 ${isHovering ? "border-purple-light/80" : "border-white/30"}`} />
-      </motion.div>
+      </div>
     </>
   );
 }

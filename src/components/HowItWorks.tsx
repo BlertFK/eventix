@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 
 const steps = [
@@ -34,7 +33,7 @@ export default function HowItWorks() {
       className="relative py-24 md:py-32 px-4 overflow-hidden"
     >
       {/* Background accent */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-purple/5 blur-[150px] rounded-full" />
+      <div className="blur-orb absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-purple/5 blur-[150px] rounded-full" />
 
       <div className="relative max-w-7xl mx-auto">
         <SectionHeading
@@ -44,16 +43,11 @@ export default function HowItWorks() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-0">
-          {steps.map((step, i) => (
-            <motion.div
+          {steps.map((step) => (
+            <div
               key={step.number}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: i * 0.15 }}
               className="relative group cursor-pointer"
             >
-
               <div className="relative p-8 md:p-10 rounded-2xl hover:bg-glass/30 transition-all duration-500 h-full">
                 {/* Large number */}
                 <div className="relative mb-6">
@@ -70,7 +64,7 @@ export default function HowItWorks() {
                   {step.description}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

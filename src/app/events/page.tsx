@@ -6,12 +6,17 @@ import EventsClient from "./EventsClient";
 export const dynamic = "force-dynamic";
 
 export default async function EventsPage() {
-  await connectDB();
-  const events = await Event.find({ status: { $in: ["published", "active"] } })
-    .sort({ date: 1 })
-    .lean();
+  let serialized = [];
 
-  const serialized = JSON.parse(JSON.stringify(events));
+  try {
+    await connectDB();
+    const events = await Event.find({ status: { $in: ["published", "active"] } })
+      .sort({ date: 1 })
+      .lean();
+    serialized = JSON.parse(JSON.stringify(events));
+  } catch (error) {
+    console.error("Failed to fetch events:", error);
+  }
 
   return <EventsClient initialEvents={serialized} />;
 }

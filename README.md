@@ -109,18 +109,15 @@ cd eventix
 npm install
 ```
 
-3. Create `.env.local` file:
-```env
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/eventix?retryWrites=true&w=majority
-NEXTAUTH_SECRET=your-secret-key
-NEXTAUTH_URL=http://localhost:3000
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-```
-
-4. Seed admin user (optional):
+3. Set up environment variables:
 ```bash
-node scripts/seed-admin.mjs
+cp .env.example .env.local
+```
+Then open `.env.local` and fill in your MongoDB Atlas connection string and other values.
+
+4. Seed the database (creates admin user + sample events):
+```bash
+npm run seed
 ```
 
 5. Run development server:
@@ -130,6 +127,12 @@ npm run dev
 
 6. Open [http://localhost:3000](http://localhost:3000)
 
+### Admin Login
+
+After seeding, log in with:
+- **Email:** `admin@eventix.com`
+- **Password:** `Admin123!`
+
 ### Running Tests
 
 ```bash
@@ -138,20 +141,25 @@ npm test
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `MONGODB_URI` | MongoDB connection string |
-| `NEXTAUTH_SECRET` | Secret for JWT encryption |
-| `NEXTAUTH_URL` | Application URL |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID (optional) |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret (optional) |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `MONGODB_URI` | Yes | MongoDB Atlas connection string |
+| `NEXTAUTH_SECRET` | Yes | Secret for JWT encryption |
+| `NEXTAUTH_URL` | Yes | Application URL (`http://localhost:3000` for dev) |
+| `GOOGLE_CLIENT_ID` | No | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | No | Google OAuth client secret |
+| `FACEBOOK_CLIENT_ID` | No | Facebook OAuth client ID |
+| `FACEBOOK_CLIENT_SECRET` | No | Facebook OAuth client secret |
+
+> **MongoDB Atlas:** Make sure your IP is whitelisted in Atlas under **Security > Database & Network Access**. For Vercel, add `0.0.0.0/0` to allow all IPs.
 
 ## Deployment (Vercel)
 
 1. Push code to GitHub
 2. Import project in [vercel.com](https://vercel.com)
-3. Add environment variables in Vercel dashboard
-4. Deploy
+3. Add all environment variables in Vercel dashboard (set `NEXTAUTH_URL` to your Vercel domain)
+4. In MongoDB Atlas, whitelist `0.0.0.0/0` under Network Access
+5. Deploy
 
 ## License
 

@@ -3,8 +3,7 @@ import { Space_Grotesk } from "next/font/google";
 import AuthProvider from "@/context/AuthProvider";
 import { CartProvider } from "@/context/CartContext";
 import { ToastProvider } from "@/components/ui/Toast";
-import CustomCursor from "@/components/CustomCursor";
-import SmoothScroll from "@/components/SmoothScroll";
+import DesktopEffects from "@/components/DesktopEffects";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -30,8 +29,7 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <ToastProvider>
-              <SmoothScroll />
-              <CustomCursor />
+              <DesktopEffects />
               {children}
             </ToastProvider>
           </CartProvider>
