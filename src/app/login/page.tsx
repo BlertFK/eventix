@@ -1,8 +1,6 @@
 "use client";
 
-export const dynamic = 'force-dynamic';
-
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -18,7 +16,7 @@ interface LoginForm {
   password: string;
 }
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectMessage = searchParams.get("message");
@@ -51,7 +49,6 @@ export default function LoginPage() {
     <>
       <Navbar />
       <main className="min-h-screen flex items-center justify-center px-4 pt-20 pb-12 relative overflow-hidden">
-        {/* Background orbs */}
         <div
           className="absolute top-20 -right-32 w-80 h-80 rounded-full bg-purple/15 blur-[120px]"
           style={{ animation: "float 15s ease-in-out infinite" }}
@@ -133,14 +130,12 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-glass-border" />
             <span className="text-xs text-gray-500">or continue with</span>
             <div className="flex-1 h-px bg-glass-border" />
           </div>
 
-          {/* OAuth buttons */}
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
@@ -175,5 +170,13 @@ export default function LoginPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p className="text-gray-400">Loading...</p></div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
