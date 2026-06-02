@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Calendar, Clock, MapPin, Users, Star, Minus, Plus, ShoppingCart, Edit2, Trash2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -43,6 +44,7 @@ interface Review {
 
 export default function EventDetailClient({ event }: { event: EventDetail }) {
   const { data: session } = useSession();
+  const router = useRouter();
   const { addItem } = useCart();
   const { toast } = useToast();
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -64,6 +66,11 @@ export default function EventDetailClient({ event }: { event: EventDetail }) {
   }, [event._id]);
 
   const handleAddToCart = () => {
+    if (!session) {
+      toast("Please log in to add events to your cart.", "error");
+      router.push("/login?message=Please+log+in+to+add+events+to+your+cart");
+      return;
+    }
     const ticket = event.ticketTypes?.[selectedTicket];
     addItem({
       eventId: event._id,

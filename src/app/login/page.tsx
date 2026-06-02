@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -18,6 +18,8 @@ interface LoginForm {
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectMessage = searchParams.get("message");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -71,6 +73,16 @@ export default function LoginPage() {
               Sign in to access your tickets and events.
             </p>
           </div>
+
+          {redirectMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-4 p-3 rounded-lg bg-purple/10 border border-purple/20 text-purple-light text-sm text-center"
+            >
+              {redirectMessage}
+            </motion.div>
+          )}
 
           {error && (
             <motion.div
